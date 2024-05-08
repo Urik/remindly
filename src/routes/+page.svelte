@@ -1,17 +1,28 @@
 <script lang="ts">
-  import { fly, fade } from 'svelte/transition';
+  import type { FixedReminder, RecurrentReminder } from "../lib/types";
+  import ReminderDatesEditor from "./ReminderDatesEditor.svelte";
+  import ReminderInput from "./ReminderInput.svelte";
+  import RemindersPreview from "./RemindersPreview.svelte";
 
-  import Greeting from './Greeting.svelte';
-  import ReminderInput from './ReminderInput.svelte';
+  let reminder: RecurrentReminder | FixedReminder | null = null;
+  let whatToRemember: string = '';
 
-  let whatToRemember: string;
-  let selectedType: 'recurring' | 'fixed';
+  let reminderIsValid: boolean = false;
+  $: {
+    if (reminder?.type === 'fixed') {
+      reminderIsValid = !!(reminder.dateTime && !isNaN(reminder.dateTime.getTime()));
+    } else if (reminder?.type === 'recurrent') {
+      reminderIsValid = !!(reminder.daysOfWeek.length > 0 && reminder.time && !isNaN(reminder.time.getTime()));
+    } else {
+      reminderIsValid = false;
+    }
+  };
 </script>
 
 <style>
 </style>
 
-<div class="nes-container w-full my-4">
+<div class="nes-container w-full mb-4">
   <div class="mb-4 relative">
     <h1 class="text-red-700 text-2xl">Rememberly!</h1>
     <h1 class="text-center text-green-700 text-2xl absolute left-0 top-0 -translate-x-0.5 -translate-y-0.5">Rememberly!</h1>
@@ -20,18 +31,13 @@
     Hi, I am rememberly! If you need to remember anything, I can help you with that!
   </span>
 </div>
-<!-- <Greeting on:create={() => {console.log('bebo')}}/> -->
 <div class="nes-container w-full shadow-xl gap-4 flex flex-col">
-    <ReminderInput bind:inputContent={whatToRemember}/>
-
-    {#if whatToRemember}
-      <span transition:fade class="transition-all">When?</span>
-      <div transition:fade class="flex flex-row justify-stretch gap-4 transition-all">
-        <button on:click={() => selectedType = 'recurring'} class="transition-[flex-grow] ease-in-out nes-btn { selectedType === 'recurring' ? 'grow-[8]' : 'flex-grow' }">Recurring date</button>
-        <button on:click={() => selectedType = 'fixed'} class="transition-[flex-grow] ease-in-out nes-btn { selectedType === 'fixed' ? 'grow-[8]' : 'flex-grow' }">Fixed date</button>
-      </div>
-      {#if selectedType === 'recurring'}
-        LOL
-      {/if}
+  <ReminderInput bind:inputContent={whatToRemember} />
+  {#if whatToRemember}
+    <ReminderDatesEditor bind:reminder />
+    {#if reminder && reminderIsValid}
+      <RemindersPreview reminderContent={whatToRemember} reminder={reminder} />
+      <button class="nes-btn is-error" on:click={() => console.log(reminder)}>REMIND ME!</button>
     {/if}
+  {/if}
 </div>
