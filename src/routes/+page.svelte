@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { getSubscription } from "$lib/pushSubscription";
   import type { FixedReminder, RecurrentReminder } from "../lib/types";
   import ReminderDatesEditor from "./ReminderDatesEditor.svelte";
   import ReminderInput from "./ReminderInput.svelte";
@@ -17,6 +18,30 @@
       reminderIsValid = false;
     }
   };
+
+  async function handleRemindMe() {
+    const permission = await Notification.requestPermission();
+    console.log('permission:', permission);
+    const pushSubscription = await getSubscription();
+    const response = await fetch('/api/push/subscriptions', {
+      method: 'post',
+      headers: {
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        reminder,
+        whatToRemember,
+        subscription: pushSubscription,
+      }),
+    });
+
+    console.log(await response.json());
+  }
+
+  // navigator.serviceWorker.ready.then((registration) => {
+  //   registration.showNotification('Papita');
+  // });
+
 </script>
 
 <style>
@@ -37,7 +62,7 @@
     <ReminderDatesEditor bind:reminder />
     {#if reminder && reminderIsValid}
       <RemindersPreview reminderContent={whatToRemember} reminder={reminder} />
-      <button class="nes-btn is-error" on:click={() => console.log(reminder)}>REMIND ME!</button>
+      <button class="nes-btn is-error" on:click={handleRemindMe}>REMIND ME!</button>
     {/if}
   {/if}
 </div>

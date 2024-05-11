@@ -1,0 +1,1 @@
+export class NotificationsBlockedError extends Error { }

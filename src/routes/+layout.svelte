@@ -1,5 +1,11 @@
-<script>
+<script lang="ts">
   import "../app.css";
+
+  async function test(): Promise<void> {
+    const registration = await navigator.serviceWorker.ready;
+  }
+
+
 </script>
 
 <style>

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { fly, slide } from 'svelte/transition';
   import type { DayOfWeek, FixedReminder, RecurrentReminder } from "$lib/types";
 
   export let reminderContent: string;
@@ -22,7 +23,6 @@
       return [];
     }
 
-    let dayIndex = startingPoint.getDay();
     const daysIndexMap: Record<DayOfWeek, number> = {
       sunday: 0,
       monday: 1,
@@ -36,7 +36,7 @@
     const reminderDays = reminder.daysOfWeek.map(dayOfWeek => daysIndexMap[dayOfWeek]);
     let countingSince = startingPoint;
     while (true) {
-      const remindersOfWeek = reminderDays.filter(reminderDay => reminderDay >= dayIndex);
+      const remindersOfWeek = reminderDays.filter(reminderDay => reminderDay >= startingPoint.getDay());
       const reminderDatesInWeek = remindersOfWeek.reduce((acc, dayOfWeek) => {
         const daysInTheFuture = dayOfWeek - countingSince.getDay();
 
@@ -77,16 +77,21 @@
     A preview of your next reminders
   </div>
   You will be reminded of <blockquote>"{reminderContent}"</blockquote> on:
-  {#each weeksToDisplay as week, i }
-    <div class="nes-container with-title mb-4">
-      <div class="title">Week {i + 1}</div>
-      <ul class="nes-list is-disc">
-        {#each week as day}
-          <li>{day}</li>
-        {/each}
-      </ul>
-    </div>
-    {/each}
+  {#each weeksToDisplay as week, i ('week' + i) }
+    {#if week.length}
+      <div transition:fly class="nes-container with-title mb-4">
+        <div class="title">Week {i + 1}</div>
+        <ul class="nes-list is-disc">
+          {#each week as day}
+            <li transition:slide>{new Intl.DateTimeFormat(undefined, {
+              dateStyle: 'medium',
+              timeStyle: 'short',
+            }).format(day)}</li>
+          {/each}
+        </ul>
+      </div>
+    {/if}
+  {/each}
   {#if reminder.type === 'recurrent'}
   <div>
     And so on until you decide to stop or the stars are extinguished...
