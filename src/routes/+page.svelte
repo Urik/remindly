@@ -37,11 +37,6 @@
 
     console.log(await response.json());
   }
-
-  // navigator.serviceWorker.ready.then((registration) => {
-  //   registration.showNotification('Papita');
-  // });
-
 </script>
 
 <style>
@@ -54,6 +49,7 @@
   </div>
   <span>
     Hi, I am rememberly! If you need to remember anything, I can help you with that!
+
   </span>
 </div>
 <div class="nes-container w-full shadow-xl gap-4 flex flex-col">

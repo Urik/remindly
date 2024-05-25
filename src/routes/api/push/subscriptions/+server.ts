@@ -10,7 +10,6 @@ export const POST: RequestHandler = async ({ request }) => {
   const vapidKeys = {
     publicKey: PUBLIC_VAPID_PUBLIC_KEY,
     privateKey: VAPID_PRIVATE_KEY,
-    what: 'guero',
   };
   
   const { subscription, reminder, whatToRemember } = await request.json();

@@ -1,0 +1,1 @@
+ALTER TABLE public.reminders ADD remindertype varchar(50) NOT NULL;
