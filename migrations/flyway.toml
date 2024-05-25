@@ -25,3 +25,8 @@ ignoreNewlinesInTextObjects = "off"
 [environments.Remindly-dev]
 url = "jdbc:postgresql://localhost:54321/postgres"
 schemas = [ "public" ]
+
+[environments.remindly-test]
+url = "jdbc:postgresql://localhost:54321/remindly-test"
+schemas = [ "public" ]
+displayName = "remindly-test"

@@ -8,8 +8,10 @@
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"test": "vitest run",
-		"test:watch": "vitest watch"
+		"test:unit": "vitest --config ./vitest.unit.config.ts run",
+		"test:unit:watch": "vitest --config ./vitest.unit.config.ts watch",
+    "test:integration": "vitest --mode integration-tests --config ./vitest.integration.config.ts run",
+		"test:integration:watch": "vitest --mode integration-tests --config ./vitest.integration.config.ts watch"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^3.0.0",
